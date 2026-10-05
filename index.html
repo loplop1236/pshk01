@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSHK01 Fan Hub | Легендарный Твич-Портал</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0b0e14;
+            --card-bg: #141923;
+            --card-hover: #1c2331;
+            --twitch-purple: #9146ff;
+            --twitch-glow: #bf94ff;
+            --accent-cyan: #00f2fe;
+            --text-main: #f0f3f8;
+            --text-muted: #8c9ba5;
+            --border-color: #242f42;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Glow Background */
+        .glow-sphere {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(145, 70, 255, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            top: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header / Navbar */
+        header {
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(11, 14, 20, 0.85);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span {
+            color: var(--twitch-glow);
+            text-shadow: 0 0 16px rgba(145, 70, 255, 0.6);
+        }
+
+        .live-badge {
+            background: #eb0400;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .live-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.8); }
+        }
+
+        /* Hero Profile Section */
+        .profile-section {
+            padding: 60px 0 40px;
+        }
+
+        .profile-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 40px;
+            align-items: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--twitch-purple), var(--accent-cyan));
+        }
+
+        .avatar-box {
+            position: relative;
+            width: 240px;
+            height: 240px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid var(--twitch-purple);
+            box-shadow: 0 0 24px rgba(145, 70, 255, 0.3);
+        }
+
+        .avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info h1 {
+            font-size: 40px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tagline {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 14px 18px;
+            border-radius: 12px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-top: 4px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-twitch {
+            background: var(--twitch-purple);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(145, 70, 255, 0.4);
+        }
+
+        .btn-twitch:hover {
+            background: #772ce8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Section Titles */
+        .section-header {
+            margin: 50px 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .section-header h2 {
+            font-size: 26px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header h2 span {
+            color: var(--twitch-glow);
+        }
+
+        /* Clips Grid */
+        .clips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .clip-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .clip-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--twitch-purple);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+        }
+
+        .clip-thumb {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 */
+            background: #000;
+        }
+
+        .clip-thumb iframe, .clip-thumb img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .clip-info {
+            padding: 18px;
+        }
+
+        .clip-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .clip-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Pastas Section (Copy-Pastes) */
+        .pastas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 20px;
+        }
+
+        .pasta-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .pasta-card:hover {
+            background: var(--card-hover);
+        }
+
+        .pasta-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #d1d5db;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .copy-btn {
+            align-self: flex-end;
+            padding: 8px 16px;
+            font-size: 12px;
+            border-radius: 8px;
+            background: rgba(145, 70, 255, 0.15);
+            color: var(--twitch-glow);
+            border: 1px solid rgba(145, 70, 255, 0.3);
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--twitch-purple);
+            color: #fff;
+        }
+
+        .copy-btn.copied {
+            background: #10b981;
+            color: #fff;
+            border-color: #10b981;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 80px;
+            padding: 40px 0;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 800px) {
+            .profile-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 24px;
+            }
+            .avatar-box {
+                margin: 0 auto;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .social-links {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glow-sphere"></div>
+
+    <header>
+        <div class="container nav-wrapper">
+            <div class="logo">PSHK<span>01</span> HUB</div>
+            <div class="live-badge">OFFLINE / STREAMING</div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Profile Card -->
+        <section class="profile-section">
+            <div class="profile-card">
+                <div class="avatar-box">
+                    <img src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?auto=format&fit=crop&w=600&q=80" alt="pshk01">
+                </div>
+                <div class="profile-info">
+                    <h1>pshk01 <span>👑</span></h1>
+                    <p class="tagline">Легенда Твич-платформы, мастер клатчей, создатель легендарных криков и стример всея Руси.</p>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Основная платформа</div>
+                            <div class="stat-value">Twitch</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Любимая игра</div>
+                            <div class="stat-value">Dota 2 / CS2</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Статус тильта</div>
+                            <div class="stat-value" style="color: #ff4757;">99.9%</div>
+                        </div>
+                    </div>
+
+                    <div class="social-links">
+                        <a href="https://twitch.tv" target="_blank" class="btn btn-twitch">Смотреть на Twitch</a>
+                        <a href="https://t.me" target="_blank" class="btn btn-secondary">Telegram Канал</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Legendary Clips Section -->
+        <section>
+            <div class="section-header">
+                <h2><span>🎬</span> Легендарные клипы</h2>
+            </div>
+            <div class="clips-grid">
+                <div class="clip-card">
+                    <div class="clip-thumb">
+                        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80" alt="Clip">
+                    </div>
+                    <div class="clip-info">
+                        <div class="clip-title">КАК ОН ЭТО ЗАТАЩИЛ?! Невероятный клатч 1v5</div>
+                        <div class="clip-meta">
+                            <span>Просмотры: 42.5K</span>
+                            <span>Твич Клип</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="clip-card">
+                    <div class="clip-thumb">
+                        <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80" alt="Clip">
+                    </div>
+                    <div class="clip-info">
+                        <div class="clip-title">Сломал клавиатуру на 30-й минуте (ДИКИЙ РЕЙДЖ)</div>
+                        <div class="clip-meta">
+                            <span>Просмотры: 128.1K</span>
+                            <span>Твич Клип</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="clip-card">
+                    <div class="clip-thumb">
+                        <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=600&q=80" alt="Clip">
+                    </div>
+                    <div class="clip-info">
+                        <div class="clip-title">Идеальный тайминг доната под скример</div>
+                        <div class="clip-meta">
+                            <span>Просмотры: 18.9K</span>
+                            <span>Твич Клип</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Twitch Pastas Section -->
+        <section>
+            <div class="section-header">
+                <h2><span>💬</span> Золотой фонд паст из чата</h2>
+            </div>
+            <div class="pastas-grid">
+                <div class="pasta-card">
+                    <div class="pasta-text">ПШК, ты лучший стример! Если бы мне дали выбор между миллионом долларов и твоим стримом, я бы выбрал миллион, чтобы задонатить его тебе на вебку. ❤️</div>
+                    <button class="copy-btn" onclick="copyPasta(this)">Скопировать</button>
+                </div>
+
+                <div class="pasta-card">
+                    <div class="pasta-text">Привет, я твой сосед снизу. Можешь, пожалуйста, не орать в микрофон после каждого луза? У меня люстра вибрирует в такт твоему тильту. 💀</div>
+                    <button class="copy-btn" onclick="copyPasta(this)">Скопировать</button>
+                </div>
+
+                <div class="pasta-card">
+                    <div class="pasta-text">В чате 500 человек, но когда играет PSHK01, кажется, что это финал Инта на стадионе. ХОРОШ РАБОТАТЬ, ДАВАЙ ФАРМИ! 🔥</div>
+                    <button class="copy-btn" onclick="copyPasta(this)">Скопировать</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Сайт создан преданными фанатами стримера <strong>pshk01</strong> © 2026</p>
+        </div>
+    </footer>
+
+    <script>
+        function copyPasta(button) {
+            const text = button.previousElementSibling.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.innerText;
+                button.innerText = 'Скопировано! ✓';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.innerText = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
